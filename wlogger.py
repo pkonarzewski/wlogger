@@ -21,10 +21,11 @@ Row = namedtuple('row', ['date', 'action'])
 date_format = '%Y-%m-%d %H:%M:%S'
 
 parser = argparse.ArgumentParser(description='Worklog script')
-parser.add_argument('action', choices=['start', 'stop', 'status', 'report'], type=str)
+parser.add_argument('action', choices=['start', 'stop', 'status', 'report', 'bye'], type=str)
 parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now())
+# parser.add_argument('-b', '--break', required=False, type=bool, default=False)
 # parser.add_argument('-t', '--test')
-# parser.add_argument('-s', '--shutdown')
+# parser.add_argument('--shutdown')
 
 
 def generate_excel_report(log_path):
@@ -49,11 +50,15 @@ def seek_row():
     pass
 
 
+def normalize_time(dtime):
+    dt = dtime.replace(microsecond=0)
+    return dt
+
+
 if __name__ == '__main__':
 
-    logger.info('BLA')
-
     args = parser.parse_args()
+    script_date = normalize_time(args.date)
 
     report_file = Path.home() / 'work_log.csv'
 
@@ -63,7 +68,10 @@ if __name__ == '__main__':
 
     if args.action in ['start', 'stop']:
 
-        logging.warning('TEST')
+        logging.warning(args.action)
+
+        # if args.b is True:
+        #     action = 'break_'+args.action
 
         with open(report_file) as myfile:
             last_raw = Row(*list(myfile)[-1].split(';'))
@@ -72,7 +80,7 @@ if __name__ == '__main__':
         #     raise ValueError('Last action: {}, now you want {}. start or stop previous block first.'.format(args.action, last_line_action))
 
         with report_file.open(mode='a', encoding='utf8') as f:
-            f.write("{};{}\n".format(args.date.strftime(date_format), args.action))
+            f.write("{};{}\n".format(script_date.strftime(date_format), args.action))
 
     elif args.action == 'status':
 
@@ -82,9 +90,19 @@ if __name__ == '__main__':
 
             end_dd = ddd + timedelta(hours=8)
 
-        print('W pracy od:', ddd.time(),
-            '\nKoniec o:  ', end_dd.time(),
-            '\nPozostało: ', end_dd - datetime.today().replace(microsecond=0)
+        start_date = ddd.time()
+        planed_end_date = end_dd.time()
+
+        wee_text = 'Pozostało'
+        remaining = end_dd - script_date
+
+        if remaining.total_seconds() < 0:
+            remaining = abs(remaining)
+            wee_text = 'Nadgodziny'
+
+        print('W pracy od:\t', start_date,
+            '\nKoniec o:\t', planed_end_date,
+            '\n{}:\t {}'.format(wee_text, remaining)
         )
 
     elif args.action == 'report':
