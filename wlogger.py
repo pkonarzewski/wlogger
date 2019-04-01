@@ -2,30 +2,35 @@
 Worklog time.
 """
 
+from subprocess import check_output, run
 import argparse
 import logging
 from pathlib import Path
 from datetime import datetime, timedelta
 from collections import namedtuple
 
+MODULE_DOT_PATH = Path().home() / '.wlogger'
+
+if MODULE_DOT_PATH.exists() is False:
+    MODULE_DOT_PATH.mkdir()
 
 logger = logging.getLogger('worklogger')
-hdlr = logging.FileHandler(Path('~').expanduser() / 'work_logger.log')
+hdlr = logging.FileHandler(MODULE_DOT_PATH / 'logs.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
-Row = namedtuple('row', ['date', 'action'])
+Row = namedtuple('row', ['date', 'action', 'info'])
 
 date_format = '%Y-%m-%d %H:%M:%S'
 
 parser = argparse.ArgumentParser(description='Worklog script')
-parser.add_argument('action', choices=['start', 'stop', 'status', 'report', 'bye'], type=str)
+parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status'], type=str)
 parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now())
-# parser.add_argument('-b', '--break', required=False, type=bool, default=False)
-# parser.add_argument('-t', '--test')
-# parser.add_argument('--shutdown')
+parser.add_argument('--bye', action='store_true')
+# parser.add_argument('-r', '--report', action='store_true')
+# parser.add_argument('-t', '--test', action='store_true')
 
 
 def generate_excel_report(log_path):
@@ -60,11 +65,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     script_date = normalize_time(args.date)
 
-    report_file = Path.home() / 'work_log.csv'
+    report_file = MODULE_DOT_PATH / 'worklog.csv'
 
     if report_file.exists() is False:
+
         with report_file.open(mode='w', encoding='utf8') as f:
-            f.write('date;action\n')
+            f.write('date;action;info\n')
 
     if args.action in ['start', 'stop']:
 
@@ -80,7 +86,11 @@ if __name__ == '__main__':
         #     raise ValueError('Last action: {}, now you want {}. start or stop previous block first.'.format(args.action, last_line_action))
 
         with report_file.open(mode='a', encoding='utf8') as f:
-            f.write("{};{}\n".format(script_date.strftime(date_format), args.action))
+            f.write("{};{};{}\n".format(script_date.strftime(date_format), args.action, ''))
+
+        if args.action == 'stop' and args.bye is True:
+            logger.info('Shutting down system')
+            logger.info(check_output("shutdown /s /t 10", shell=True))
 
     elif args.action == 'status':
 
