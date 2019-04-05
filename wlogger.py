@@ -2,7 +2,7 @@
 Worklog time.
 """
 
-from subprocess import check_output, run
+from subprocess import run
 import argparse
 import logging
 from pathlib import Path
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         if args.action == 'stop' and args.bye is True:
             logger.info('Shutting down system')
-            logger.info(check_output("shutdown /s /t 10", shell=True))
+            run("shutdown /s /t 10", shell=True)
 
     elif args.action == 'status':
 
@@ -117,4 +117,4 @@ if __name__ == '__main__':
 
     elif args.action == 'report':
         df = generate_excel_report(report_file)
-        df.to_excel((report_file.parent / 'wlog_report.xlsx'))
+        df.to_excel((MODULE_DOT_PATH / 'wlog_report.xlsx'))
