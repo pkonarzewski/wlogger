@@ -2,6 +2,7 @@
 Worklog time.
 """
 
+import sqlite3
 from subprocess import run
 import argparse
 import logging
@@ -23,10 +24,12 @@ logger.setLevel(logging.INFO)
 
 Row = namedtuple('row', ['date', 'action', 'info'])
 
-date_format = '%Y-%m-%d %H:%M:%S'
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+conn = sqlite3.connect('example.db')
 
 parser = argparse.ArgumentParser(description='Worklog script')
-parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status'], type=str)
+parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status', 'log'], type=str)
 parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now())
 parser.add_argument('--bye', action='store_true')
 # parser.add_argument('-r', '--report', action='store_true')
@@ -56,6 +59,8 @@ def seek_row():
 
 
 def normalize_time(dtime):
+    if isinstance(dtime, str):
+        dtime = datetime.strptime(dtime, DATE_FORMAT)
     dt = dtime.replace(microsecond=0)
     return dt
 
@@ -79,14 +84,14 @@ if __name__ == '__main__':
         # if args.b is True:
         #     action = 'break_'+args.action
 
-        with open(report_file) as myfile:
-            last_raw = Row(*list(myfile)[-1].split(';'))
+        # with open(report_file) as myfile:
+        #     last_raw = Row(*list(myfile)[-1].split(';'))
 
         # if args.action == last_raw.action:
         #     raise ValueError('Last action: {}, now you want {}. start or stop previous block first.'.format(args.action, last_line_action))
 
         with report_file.open(mode='a', encoding='utf8') as f:
-            f.write("{};{};{}\n".format(script_date.strftime(date_format), args.action, ''))
+            f.write("{};{};{}\n".format(script_date.strftime(DATE_FORMAT), args.action, ''))
 
         if args.action == 'stop' and args.bye is True:
             logger.info('Shutting down system')
@@ -96,7 +101,7 @@ if __name__ == '__main__':
 
         with open(report_file) as myfile:
             last_line = Row(*list(myfile)[-1].strip().split(';'))
-            ddd = datetime.strptime(last_line.date, date_format)
+            ddd = datetime.strptime(last_line.date, DATE_FORMAT)
 
             end_dd = ddd + timedelta(hours=8)
 
@@ -117,4 +122,9 @@ if __name__ == '__main__':
 
     elif args.action == 'report':
         df = generate_excel_report(report_file)
-        df.to_excel((MODULE_DOT_PATH / 'wlog_report.xlsx'))
+        df.to_excel((MODULE_DOT_PATH / 'worklog_report_{}.xlsx'.format(datetime.today.strftime('%Y-%m-%d'))))
+
+    elif args.action == 'log':
+        with report_file.open(mode='r', encoding='utf8') as f:
+            for line in f:
+                print(line)
