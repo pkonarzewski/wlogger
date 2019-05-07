@@ -2,6 +2,7 @@
 Worklog time.
 """
 
+import configparser
 import sqlite3
 from subprocess import run
 import argparse
@@ -10,11 +11,20 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from collections import namedtuple
 
+# Config
+CONFIG = configparser.ConfigParser()
+CONFIG.read(MODULE_DOT_PATH / 'config.ini')
+
 MODULE_DOT_PATH = Path().home() / '.wlogger'
 
 if MODULE_DOT_PATH.exists() is False:
     MODULE_DOT_PATH.mkdir()
 
+LOG_FILE = Path(CONFIG.get('common', option='log_file'))
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+Row = namedtuple('row', ['date', 'action', 'info'])
+
+# Logger
 logger = logging.getLogger('worklogger')
 hdlr = logging.FileHandler(MODULE_DOT_PATH / 'logs.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -22,18 +32,16 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
-Row = namedtuple('row', ['date', 'action', 'info'])
-
-DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
-
-conn = sqlite3.connect('example.db')
-
+# Command line Parser
 parser = argparse.ArgumentParser(description='Worklog script')
 parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status', 'log'], type=str)
 parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now())
 parser.add_argument('--bye', action='store_true')
 # parser.add_argument('-r', '--report', action='store_true')
 # parser.add_argument('-t', '--test', action='store_true')
+
+# DB
+conn = sqlite3.connect('example.db')
 
 
 def generate_excel_report(log_path):
@@ -70,11 +78,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     script_date = normalize_time(args.date)
 
-    report_file = MODULE_DOT_PATH / 'worklog.csv'
+    if LOG_FILE.exists() is False:
 
-    if report_file.exists() is False:
-
-        with report_file.open(mode='w', encoding='utf8') as f:
+        with LOG_FILE.open(mode='w', encoding='utf8') as f:
             f.write('date;action;info\n')
 
     if args.action in ['start', 'stop']:
@@ -84,13 +90,13 @@ if __name__ == '__main__':
         # if args.b is True:
         #     action = 'break_'+args.action
 
-        # with open(report_file) as myfile:
+        # with open(LOG_FILE) as myfile:
         #     last_raw = Row(*list(myfile)[-1].split(';'))
 
         # if args.action == last_raw.action:
         #     raise ValueError('Last action: {}, now you want {}. start or stop previous block first.'.format(args.action, last_line_action))
 
-        with report_file.open(mode='a', encoding='utf8') as f:
+        with LOG_FILE.open(mode='a', encoding='utf8') as f:
             f.write("{};{};{}\n".format(script_date.strftime(DATE_FORMAT), args.action, ''))
 
         if args.action == 'stop' and args.bye is True:
@@ -99,7 +105,7 @@ if __name__ == '__main__':
 
     elif args.action == 'status':
 
-        with open(report_file) as myfile:
+        with open(LOG_FILE) as myfile:
             last_line = Row(*list(myfile)[-1].strip().split(';'))
             ddd = datetime.strptime(last_line.date, DATE_FORMAT)
 
@@ -121,10 +127,10 @@ if __name__ == '__main__':
         )
 
     elif args.action == 'report':
-        df = generate_excel_report(report_file)
+        df = generate_excel_report(LOG_FILE)
         df.to_excel((MODULE_DOT_PATH / 'worklog_report_{}.xlsx'.format(datetime.today.strftime('%Y-%m-%d'))))
 
     elif args.action == 'log':
-        with report_file.open(mode='r', encoding='utf8') as f:
+        with LOG_FILE.open(mode='r', encoding='utf8') as f:
             for line in f:
                 print(line)
