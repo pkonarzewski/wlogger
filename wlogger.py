@@ -12,13 +12,12 @@ from datetime import datetime, timedelta
 from collections import namedtuple
 
 # Config
-CONFIG = configparser.ConfigParser()
-CONFIG.read(MODULE_DOT_PATH / 'config.ini')
-
 MODULE_DOT_PATH = Path().home() / '.wlogger'
-
 if MODULE_DOT_PATH.exists() is False:
     MODULE_DOT_PATH.mkdir()
+
+CONFIG = configparser.ConfigParser()
+CONFIG.read(MODULE_DOT_PATH / 'config.ini')
 
 LOG_FILE = Path(CONFIG.get('common', option='log_file'))
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
