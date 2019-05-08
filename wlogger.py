@@ -131,5 +131,6 @@ if __name__ == '__main__':
 
     elif args.action == 'log':
         with LOG_FILE.open(mode='r', encoding='utf8') as f:
-            for line in f:
-                print(line)
+            lines = f.readlines()
+            for n in lines[-5:]:
+                print(n, end='')
