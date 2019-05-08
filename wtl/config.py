@@ -1,26 +1,62 @@
-import configparser
+"""The main config file.
+
+All configuration in this file can be overridden by providing a config file in ~/.wlogger
+"""
+
+import sys
+import imp
+import logging
 from collections import namedtuple
 from pathlib import Path
 import logging
 
 
-MODULE_DOT_PATH = Path().home() / '.wlogger'
+DATA_PATH = Path().home() / '.wlogger'
 
-if MODULE_DOT_PATH.exists() is False:
-    MODULE_DOT_PATH.mkdir()
+if DATA_PATH.exists() is False:
+    DATA_PATH.mkdir()
 
-CONFIG = configparser.ConfigParser()
-CONFIG.read(MODULE_DOT_PATH / 'config.ini')
 
-LOG_FILE = Path(CONFIG.get('common', option='log_file'))
+# ------------------------------------------------------------------------------
 
+# Date format for all logs
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-LOGGER = logging.getLogger('worklogger')
-hdlr = logging.FileHandler(MODULE_DOT_PATH / 'logs.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-LOGGER.addHandler(hdlr)
-LOGGER.setLevel(logging.INFO)
+# The SQLAlchemy connection string.
+DATABASE_URI = 'sqlite:///' + str(DATA_PATH / 'data.db')
 
-SQL_URL = 'sqlite:///' + str(MODULE_DOT_PATH / 'data.db')
+# Logger file path
+LOG_FILE = DATA_PATH / 'logs.log'
+
+# Log settings
+LOG_FORMAT = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+LOG_LEVEL = 'DEBUG'
+
+# Worklog #TODO: migrate to db and remove
+WORKLOG_FILE = DATA_PATH / 'worklog.csv'
+ROW = namedtuple('row', ['date', 'action', 'info'])
+
+if Path(WORKLOG_FILE).exists() is False:
+    with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
+        f.write('date;action;info\n')
+
+
+config_path = Path(DATA_PATH / 'config.py')
+if config_path.exists():
+    module = sys.modules[__name__]
+    override_conf = imp.load_source('config', str(config_path))
+
+    for key in dir(override_conf):
+        if key.isupper():
+            setattr(module, key, getattr(override_conf, key))
+
+
+# ------------------------------------------------------------------------------
+# LOGGER
+LOGGER = logging.getLogger(__name__)
+
+hdlr = logging.FileHandler(LOG_FILE)
+hdlr.setFormatter(LOG_FORMAT)
+
+LOGGER.addHandler(hdlr)
+LOGGER.setLevel(LOG_LEVEL)

@@ -1,7 +1,9 @@
 import os
+from datetime import datetime
 from subprocess import run
-from wtl.config import LOGGER
 import platform
+
+import wtl.config as conf
 
 
 def system_shutdown(freeze=10):
@@ -9,9 +11,16 @@ def system_shutdown(freeze=10):
 
     sys_name = platform.system()
 
-    LOGGER.info('Shutting down system.')
+    conf.LOGGER.info('Shutting down system.')
 
     if sys_name == 'WINDOWS':
         run("shutdown /s /t {}".format(freeze), shell=True)
     else:
         raise Exception('Operating system {} not supported'.format(sys_name))
+
+
+def normalize_time(dtime):
+    if isinstance(dtime, str):
+        dtime = datetime.strptime(dtime, conf.DATE_FORMAT)
+    dt = dtime.replace(microsecond=0)
+    return dt
