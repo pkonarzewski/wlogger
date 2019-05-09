@@ -10,8 +10,8 @@ from wtl.utils import normalize_time, system_shutdown
 
 parser = argparse.ArgumentParser(description='Worklog script')
 parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status', 'log'], type=str)
-parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now())
-parser.add_argument('--bye', action='store_true')
+parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now(), help='set time of action, default is now')
+parser.add_argument('--bye', action='store_true', help='shutdown system after "stop" action')
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
 
     if args.action in ['start', 'stop']:
 
-        conf.LOGGER.warning(args.action)
+        conf.LOGGER.info(args.action)
 
         with worklog.open(mode='a', encoding='utf8') as f:
             f.write("{};{};{}\n".format(script_date.strftime(conf.DATE_FORMAT), args.action, ''))

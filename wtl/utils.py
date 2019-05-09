@@ -13,10 +13,10 @@ def system_shutdown(freeze=10):
 
     conf.LOGGER.info('Shutting down system.')
 
-    if sys_name == 'WINDOWS':
+    if sys_name.upper() == 'WINDOWS':
         run("shutdown /s /t {}".format(freeze), shell=True)
     else:
-        raise Exception('Operating system {} not supported'.format(sys_name))
+        conf.LOGGER.exception('Operating system {} not supported'.format(sys_name))
 
 
 def normalize_time(dtime):

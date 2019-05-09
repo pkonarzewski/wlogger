@@ -2,9 +2,6 @@ from os import path
 from setuptools import setup, find_packages
 
 
-here = path.abspath(path.dirname(__file__))
-
-
 setup(
     name='wlogger',
     version='0.0.1',
