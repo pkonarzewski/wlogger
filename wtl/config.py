@@ -11,13 +11,11 @@ from pathlib import Path
 import logging
 
 
-DATA_PATH = Path().home() / '.wlogger'
-
-if DATA_PATH.exists() is False:
-    DATA_PATH.mkdir()
-
-
 # ------------------------------------------------------------------------------
+# SETTINGS
+
+# Folder for package
+DATA_PATH = Path().home() / '.wlogger'
 
 # Date format for all logs
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -36,11 +34,7 @@ LOG_LEVEL = 'DEBUG'
 WORKLOG_FILE = DATA_PATH / 'worklog.csv'
 ROW = namedtuple('row', ['date', 'action', 'info'])
 
-if Path(WORKLOG_FILE).exists() is False:
-    with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
-        f.write('date;action;info\n')
-
-
+# Config overried by local file
 config_path = Path(DATA_PATH / 'config.py')
 if config_path.exists():
     module = sys.modules[__name__]
@@ -49,6 +43,16 @@ if config_path.exists():
     for key in dir(override_conf):
         if key.isupper():
             setattr(module, key, getattr(override_conf, key))
+
+
+# ------------------------------------------------------------------------------
+# SETUP
+if DATA_PATH.exists() is False:
+    DATA_PATH.mkdir()
+
+if Path(WORKLOG_FILE).exists() is False:
+    with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
+        f.write('date;action;info\n')
 
 
 # ------------------------------------------------------------------------------

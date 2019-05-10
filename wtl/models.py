@@ -1,11 +1,23 @@
-"""x."""
+"""Sqlalchemy models."""
 
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
+import wtl.config as conf
+
 
 Base = declarative_base()
+metadata = Base.metadata
+
+
+def db_connect():
+    return create_engine(conf.DATABASE_URI)
+
+
+def create_table(engine):
+    Base.metadata.create_all(engine)
 
 
 class ActionType(Base):
@@ -40,3 +52,7 @@ class WorkDay(Base):
 
     def __repr__(self):
         return "<WorkDay(dt='%s', work_hour='%s')>" % (self.dt, self.work_hour)
+
+
+engine = create_engine(conf.DATABASE_URI)
+metadata.create_all(engine)

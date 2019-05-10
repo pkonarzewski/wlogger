@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='wlogger',
+    name='wtl',
     version='0.0.1',
 
     description='Work logger.',
