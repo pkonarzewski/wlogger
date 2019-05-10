@@ -1,6 +1,6 @@
 """The main config file.
 
-All configuration in this file can be overridden by providing a config file in ~/.wlogger
+All configuration in this file can be overridden by providing a config file in ~/.wtl
 """
 
 import sys
@@ -15,7 +15,7 @@ import logging
 # SETTINGS
 
 # Folder for package
-DATA_PATH = Path().home() / '.wlogger'
+DATA_PATH = Path().home() / '.wtl'
 
 # Date format for all logs
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'

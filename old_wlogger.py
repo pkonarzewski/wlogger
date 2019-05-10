@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from collections import namedtuple
 
 # Config
-MODULE_DOT_PATH = Path().home() / '.wlogger'
+MODULE_DOT_PATH = Path().home() / '.wtl'
 if MODULE_DOT_PATH.exists() is False:
     MODULE_DOT_PATH.mkdir()
 

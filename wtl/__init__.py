@@ -1,1 +1,1 @@
-from wtl.wlogger import Worklog
+from wtl.worklog import Worklog
