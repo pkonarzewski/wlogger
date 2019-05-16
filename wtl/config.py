@@ -48,7 +48,7 @@ if config_path.exists():
 # ------------------------------------------------------------------------------
 # SETUP
 if DATA_PATH.exists() is False:
-    DATA_PATH.mkdir()
+    DATA_PATH.mkdir(parents=True)
 
 if Path(WORKLOG_FILE).exists() is False:
     with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
