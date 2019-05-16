@@ -20,7 +20,7 @@ setup(
         'Programming Language :: Python :: 3.7'
     ],
 
-    keywords='logger work',
+    keywords='time logger work',
     packages=find_packages(exclude=['tests']),
     install_requires=['alembic>=1.0,<1.1',
                       'pandas>=0.24,<0.25',
@@ -34,7 +34,7 @@ setup(
 
     # $ pip install -e .[dev]
     extras_require={
-        'dev': ['pylint']
+        'dev': ['pylint', 'mypy']
     },
     python_requires='~=3.6'
 )
