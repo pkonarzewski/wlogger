@@ -13,7 +13,7 @@ from collections import namedtuple
 
 # Config
 MODULE_DOT_PATH = Path().home() / '.wtl'
-if MODULE_DOT_PATH.exists() is False:
+if not MODULE_DOT_PATH.exists():
     MODULE_DOT_PATH.mkdir()
 
 CONFIG = configparser.ConfigParser()
@@ -77,8 +77,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     script_date = normalize_time(args.date)
 
-    if LOG_FILE.exists() is False:
-
+    if not LOG_FILE.exists():
         with LOG_FILE.open(mode='w', encoding='utf8') as f:
             f.write('date;action;info\n')
 

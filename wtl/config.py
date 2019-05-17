@@ -47,10 +47,10 @@ if config_path.exists():
 
 # ------------------------------------------------------------------------------
 # SETUP
-if DATA_PATH.exists() is False:
+if not DATA_PATH.exists():
     DATA_PATH.mkdir(parents=True)
 
-if Path(WORKLOG_FILE).exists() is False:
+if not Path(WORKLOG_FILE).exists():
     with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
         f.write('date;action;info\n')
 

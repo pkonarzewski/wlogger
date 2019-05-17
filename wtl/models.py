@@ -30,7 +30,8 @@ class Entry(Base):
     action_name = Column(String)
 
     def __repr__(self):
-        return "<Entry(dttm='%s', action='%s')>" % self.dttm, self.action_name
+        str_created_at = self.created_at.dttm("%Y-%m-%d %H:%M:%S")
+        return "<Entry(dttm='%s', action='%s')>" % str_created_at, self.action_name
 
     def log_action(self, session, action_type, dttm):
         pass
