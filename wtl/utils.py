@@ -19,7 +19,10 @@ def system_shutdown(freeze:int=10) -> None:
     else:
         conf.LOGGER.exception('Operating system "{}" not supported'.format(sys_name))
 
+
 def normalize_time(dtime: Union[str, datetime]) -> datetime:
+    """Normalize time."""
+
     if isinstance(dtime, str):
         dtime = datetime.strptime(dtime, conf.DATE_FORMAT)
     dt = dtime.replace(microsecond=0)

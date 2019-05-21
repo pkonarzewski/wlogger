@@ -8,14 +8,12 @@ from sqlalchemy.orm import relationship
 import wtl.config as conf
 
 
-# from airflow.utils.db import provide_session ??
-
 Base = declarative_base()
 metadata = Base.metadata
 
 
-def db_connect():
-    return create_engine(conf.DATABASE_URI)
+def db_connect(uri=conf.DATABASE_URI):
+    return create_engine(uri)
 
 
 def create_table(engine):
@@ -48,5 +46,5 @@ class Entry(Base):
 #         return "<WorkDay(dt='%s', work_hour='%s')>" % (self.dt, self.work_hour)
 
 
-engine = create_engine(conf.DATABASE_URI)
+engine = db_connect(conf.DATABASE_URI)
 metadata.create_all(engine)

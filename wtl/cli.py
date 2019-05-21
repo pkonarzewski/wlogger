@@ -5,11 +5,12 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 import wtl.config as conf
+from wtl.worklog import Worklog
 from wtl.utils import normalize_time, system_shutdown
 
 
 parser = argparse.ArgumentParser(description='Worklog script')
-parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status', 'log'], type=str)
+parser.add_argument('action', choices=['start', 'stop', 'pause', 'event', 'status', 'log', 'test'], type=str)
 parser.add_argument('-d', '--date', required=False, type=str, default=datetime.now(), help='set time of action, default is now')
 parser.add_argument('--bye', action='store_true', help='shutdown system after "stop" action')
 
@@ -61,3 +62,7 @@ def main():
             lines = f.readlines()
             for n in lines[-5:]:
                 print(n, end='')
+
+    elif args.action == 'test':
+        wl = Worklog()
+        wl.start(dttm=normalize_time(args.date))
