@@ -4,9 +4,9 @@ import argparse
 from pathlib import Path
 from datetime import datetime, timedelta
 
-import wtl.config as conf
-from wtl.worklog import Worklog
-from wtl.utils import normalize_time, system_shutdown
+# from wtlogger.worklog import Worklog
+import wtlogger.config as conf
+from wtlogger.utils import normalize_time, system_shutdown
 
 
 parser = argparse.ArgumentParser(description='Worklog script')
@@ -29,7 +29,7 @@ def main():
         conf.LOGGER.info(args.action)
 
         with worklog.open(mode='a', encoding='utf8') as f:
-            f.write("{};{};{}\n".format(script_date.strftime(conf.DATE_FORMAT), args.action, ''))
+            f.write("{};{}\n".format(script_date.strftime(conf.DATE_FORMAT), args.action))
 
         if args.action == 'stop' and args.bye is True:
             system_shutdown()
@@ -63,6 +63,14 @@ def main():
             for n in lines[-5:]:
                 print(n, end='')
 
+    elif args.action == 'report':
+        # --from {forever} --to {today}
+        print('TODO')
+
     elif args.action == 'test':
-        wl = Worklog()
-        wl.start(dttm=normalize_time(args.date))
+        print('test')
+        # wl = Worklog()
+        # wl.start(dttm=normalize_time(args.date))
+
+    elif args.action == 'version':
+        print('version X.X.X')

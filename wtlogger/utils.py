@@ -4,7 +4,7 @@ from subprocess import run
 import platform
 from typing import Union
 
-import wtl.config as conf
+import wtlogger.config as conf
 
 
 def system_shutdown(freeze:int=10) -> None:

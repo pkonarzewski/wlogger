@@ -1,1 +1,1 @@
-# Wtl - Work Time Logger
+# Wtlogger [Work Time Logger]

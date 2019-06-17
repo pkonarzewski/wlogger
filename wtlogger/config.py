@@ -32,7 +32,7 @@ LOG_LEVEL = 'DEBUG'
 
 # Worklog #TODO: migrate to db and remove
 WORKLOG_FILE = DATA_PATH / 'worklog.csv'
-ROW = namedtuple('row', ['date', 'action', 'info'])
+ROW = namedtuple('row', ['date', 'action'])
 
 # Config overried by local file
 config_path = Path(DATA_PATH / 'config.py')

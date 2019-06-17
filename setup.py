@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='wtl',
-    version='0.0.1',
+    name='wtlogger',
+    version='0.0.2',
 
-    description='Work logger.',
-    long_description='Work logger.',
+    description='Work Time Logger.',
+    long_description='Work Time Logger.',
 
     url='https://pkonarzewski.github.com',
 
@@ -25,16 +25,17 @@ setup(
     install_requires=['alembic>=1.0,<1.1',
                       'pandas>=0.24,<0.25',
                       'sqlalchemy>=1.3,<1.4',
+                      'Click==7.0'
                       ],
     entry_points={
         'console_scripts': [
-            'wtl=wtl.cli:main',
+            'wtl=wtlogger.cli:main',
         ],
     },
 
     # $ pip install -e .[dev]
     extras_require={
-        'dev': ['pylint', 'mypy']
+        'dev': ['pylint', 'mypy', 'tox']
     },
     python_requires='~=3.6'
 )
