@@ -24,12 +24,27 @@ from wtlogger.utils import normalize_time, system_shutdown
 
 
 def write_to_log(func):
-    return None
+
+    def wrapper():
+        print('test')
+        ret = func()
+        print('test')
+
+        # write to file
+        ret
+
+    return wrapper
     # with self.logfile.open(mode='a', encoding='utf8') as f:
     #     f.write(func)
 
 
-class Worklog(object):
+class Entry():
+    pass
+
+
+
+
+class Worklog():
 
     def __init__(self, logfile: Path=conf.WORKLOG_FILE, dttm_format: str=conf.DATE_FORMAT):
         self.logfile = Path(logfile)

@@ -1,6 +1,6 @@
 import unittest
 
-from wtl import Worklog
+from wtlogger import Worklog
 
 class TestWorkLog(unittest.TestCase):
 
@@ -8,4 +8,4 @@ class TestWorkLog(unittest.TestCase):
         pass
 
     def test_init(self):
-        wl = Worklog()
+        wtl = Worklog()
