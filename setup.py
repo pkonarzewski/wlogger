@@ -1,10 +1,20 @@
 from os import path
 from setuptools import setup, find_packages
+import re
+
+
+here = path.abspath(path.dirname(__file__))
+
+# Version
+with open(path.join(here, 'wtlogger\_version.py')) as version_file:
+    version_line = version_file.read().strip()
+
+pkg_version = re.search(r"^__version__ = \"(.+)\"", version_line, re.M).group(1)
 
 
 setup(
     name='wtlogger',
-    version='0.0.2',
+    version=pkg_version,
 
     description='Work Time Logger.',
     long_description='Work Time Logger.',
