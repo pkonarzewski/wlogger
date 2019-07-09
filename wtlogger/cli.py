@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 # from wtlogger.worklog import Worklog
 import wtlogger.config as conf
 from wtlogger.utils import normalize_time, system_shutdown
-from wtlogger._version import __version__
 
 
 parser = argparse.ArgumentParser(description='Worklog script')
@@ -74,4 +73,4 @@ def main():
         # wl.start(dttm=normalize_time(args.date))
 
     elif args.action == 'version':
-        print('version: "{}"'.format(__version__))
+        print('version: "{}"'.format(conf.VERSION_STR))
