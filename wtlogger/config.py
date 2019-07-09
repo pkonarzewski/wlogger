@@ -3,60 +3,42 @@
 All configuration in this file can be overridden by providing a config file in ~/.wtl
 """
 
+import os
 import sys
 import imp
 import logging
 from collections import namedtuple
-from pathlib import Path
 import logging
+
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+if "WTL_HOME" in os.environ:
+    DATA_PATH = os.environ["WTL_HOME"]
+else:
+    DATA_PATH = os.path.join(os.path.expanduser("~"), '.wtl')
 
 
 # ------------------------------------------------------------------------------
 # SETTINGS
 
-# Folder for package
-DATA_PATH = Path().home() / '.wtl'
-
 # Date format for all logs
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # The SQLAlchemy connection string.
-DATABASE_URI = 'sqlite:///' + str(DATA_PATH / 'data.db')
+DATABASE_URI = 'sqlite:///' + os.path.join(DATA_PATH, 'data.db')
 
 # Logger file path
-LOG_FILE = DATA_PATH / 'logs.log'
+LOG_FILE = os.path.join(DATA_PATH, 'logs.log')
 
 # Log settings
 LOG_FORMAT = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 LOG_LEVEL = 'DEBUG'
 
 # Worklog #TODO: migrate to db and remove
-WORKLOG_FILE = DATA_PATH / 'worklog.csv'
+WORKLOG_FILE = os.path.join(DATA_PATH, 'worklog.csv')
 ROW = namedtuple('row', ['date', 'action'])
 
-# Config overried by local file
-config_path = Path(DATA_PATH / 'config.py')
-if config_path.exists():
-    module = sys.modules[__name__]
-    override_conf = imp.load_source('config', str(config_path))
-
-    for key in dir(override_conf):
-        if key.isupper():
-            setattr(module, key, getattr(override_conf, key))
-
-
-# ------------------------------------------------------------------------------
-# SETUP
-if not DATA_PATH.exists():
-    DATA_PATH.mkdir(parents=True)
-
-if not Path(WORKLOG_FILE).exists():
-    with Path(WORKLOG_FILE).open(mode='w', encoding='utf8') as f:
-        f.write('date;action;info\n')
-
-
-# ------------------------------------------------------------------------------
-# LOGGER
+# Logger object
 LOGGER = logging.getLogger(__name__)
 
 hdlr = logging.FileHandler(LOG_FILE)
@@ -64,3 +46,14 @@ hdlr.setFormatter(LOG_FORMAT)
 
 LOGGER.addHandler(hdlr)
 LOGGER.setLevel(LOG_LEVEL)
+
+
+# Config overried by local file
+config_path = os.path.join(DATA_PATH, 'config.py')
+if os.path.exists(config_path):
+    module = sys.modules[__name__]
+    override_conf = imp.load_source('config', config_path)
+
+    for key in dir(override_conf):
+        if key.isupper():
+            setattr(module, key, getattr(override_conf, key))
