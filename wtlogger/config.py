@@ -1,6 +1,7 @@
 """The main config file.
 
-All configuration in this file can be overridden by providing a config file in ~/.wtl
+All configuration in this file can be overridden by providing a config
+file in ~/.wtl.
 """
 
 import os
