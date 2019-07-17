@@ -1,5 +1,7 @@
 """Sqlalchemy models."""
 
+from datetime import datetime
+
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -38,6 +40,14 @@ class Entry(Base):
 
 # #     def __repr__(self):
 # #         return "<WorkDay(dt='%s', work_hour='%s')>" % (self.dt, self.work_hour)
+
+
+class EventType(Base):
+    __table__name = 'event_type'
+
+    id = Column(Integer, primay_key=True)
+    name = Column(String)
+    dttm = Column(DateTime, nullable=False, default=datetime.now())
 
 
 # # TODO: Move to Alembic
