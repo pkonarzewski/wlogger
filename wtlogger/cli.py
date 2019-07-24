@@ -7,12 +7,13 @@ from datetime import datetime, timedelta
 from wtlogger.wtl import Worklog
 import wtlogger.config as conf
 from wtlogger.utils import normalize_time, system_shutdown
+from wtlogger.db import initdb
 
 
 parser = argparse.ArgumentParser(description="Worklog script")
 parser.add_argument(
     "action",
-    choices=["start", "stop", "pause", "event", "status", "log", "test", "version"],
+    choices=["start", "stop", "pause", "event", "status", "log", "test", "version", "initdb"],
     type=str,
 )
 parser.add_argument(
@@ -99,3 +100,6 @@ def main():
 
     elif args.action == "version":
         print('version: "{}"'.format(conf.VERSION_STR))
+
+    elif args.action == 'initdb':
+        initdb()

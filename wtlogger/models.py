@@ -2,54 +2,47 @@
 
 from datetime import datetime
 
-from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 import wtlogger.config as conf
+from wtlogger.db import Base
 
 
-Base = declarative_base()
-# metadata = Base.metadata
-
-
-# def db_connect(uri=conf.DATABASE_URI):
-#     return create_engine(uri)
-
-
-class Entry(Base):
-    __tablename__ = 'entry'
+class WorkDay(Base):
+    __tablename__ = "workday"
 
     id = Column(Integer, primary_key=True)
-    dttm = Column(DateTime, nullable=False)
-    action_name = Column(String)
+    iso_format = Column(String, unique=True)
+    work_duration = Column(Integer)
 
     def __repr__(self):
-        str_created_at = self.created_at.dttm("%Y-%m-%d %H:%M:%S")
-        return "<Entry(dttm='%s', action='%s')>" % str_created_at, self.action_name
+        return "<WorkDay(dt='%s', work_duration='%s')>" % (
+            self.iso_format,
+            self.work_duration,
+        )
 
 
-# # class WorkDay(Base):
-# #     __tablename__ = 'work_day'
+class Event(Base):
+    __tablename__ = "eventlog"
 
-# #     id = Column(Integer, primary_key=True)
-# #     dt = Column(Date)
-# #     work_hour = Column(Integer)
-
-# #     def __repr__(self):
-# #         return "<WorkDay(dt='%s', work_hour='%s')>" % (self.dt, self.work_hour)
-
-
-class EventType(Base):
-    __table__name = 'event_type'
-
-    id = Column(Integer, primay_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
-    dttm = Column(DateTime, nullable=False, default=datetime.now())
+    default_duration = Column(Integer)
+
+    def __repr__(self):
+        return "<Event>(name='%s', default_duration='%s)" % (self.name, self.default_duration)
 
 
-# # TODO: Move to Alembic
-# engine = db_connect(conf.DATABASE_URI)
-# metadata.create_all(engine)
+class EventLog(Base):
+    __tablename__ = "worklog"
+
+    id = Column(Integer, primary_key=True)
+    ddtm = Column(DateTime)
+    start_dttm = Column(DateTime)
+    day_id = Column(Integer)  #
+    event_id = Column(Integer)  #
+    duration = Column(Integer)  #
+
+    def __repr__(self):
+        return "<EventLog>()"
