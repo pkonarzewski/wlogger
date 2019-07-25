@@ -24,18 +24,21 @@ class WorkDay(Base):
 
 
 class Event(Base):
-    __tablename__ = "eventlog"
+    __tablename__ = "event"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     default_duration = Column(Integer)
 
     def __repr__(self):
-        return "<Event>(name='%s', default_duration='%s)" % (self.name, self.default_duration)
+        return "<Event(name='%s', default_duration='%s)>" % (
+            self.name,
+            self.default_duration,
+        )
 
 
 class EventLog(Base):
-    __tablename__ = "worklog"
+    __tablename__ = "eventlog"
 
     id = Column(Integer, primary_key=True)
     ddtm = Column(DateTime)
@@ -45,4 +48,4 @@ class EventLog(Base):
     duration = Column(Integer)  #
 
     def __repr__(self):
-        return "<EventLog>()"
+        return "<EventLog()>" % ()

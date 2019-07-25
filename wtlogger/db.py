@@ -32,15 +32,18 @@ def create_session():
 
 
 def initdb():
+    """x."""
     log.info("Init database")
     upgradedb()
 
 
 def upgradedb():
+    """x."""
     # TODO: alembic
     log.info("Creating tables")
     Base.metadata.create_all(engine)
 
 
 def resetdb():
+    """x."""
     log.info("TODO: Reset database")
