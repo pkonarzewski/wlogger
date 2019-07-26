@@ -9,7 +9,9 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "wtlogger/_version.py")) as version_file:
     version_line = version_file.read().strip()
 
-pkg_version = re.search(r"^__version__ = \"(.+)\"", version_line, re.M).group(1)  # type: ignore
+pkg_version = re.search(r"^__version__ = \"(.+)\"", version_line, re.M).group(
+    1
+)  # type: ignore
 
 
 setup(
@@ -35,6 +37,9 @@ setup(
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
     # $ pip install -e .[dev]
-    extras_require={"dev": ["pylint", "mypy", "tox", "black"]},
+    extras_require={
+        "dev": ["pylint", "mypy", "tox", "black"],
+        "installer": ["pyinstaller"],
+    },
     python_requires="~=3.6",
 )
