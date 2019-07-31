@@ -5,22 +5,27 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
-import wtlogger.config as conf
 from wtlogger.db import Base
+import wtlogger.config as conf
 
 
 class WorkDay(Base):
     __tablename__ = "workday"
 
     id = Column(Integer, primary_key=True)
-    create_at = Column(DateTime)
-    iso_format = Column(String, unique=True)
     dttm = Column(DateTime)
+    iso_format = Column(String, unique=True)
     work_duration = Column(Integer)
-    work_session = relationship("WorkSession")
+    create_at = Column(DateTime)
+
+    def __init__(self, dttm: datetime, work_duration: int = conf.DEFAULT_DAY_DURATION):
+        self.dttm = dttm.date()
+        self.iso_format = dttm.strftime("%Y-%m-%d")
+        self.work_duration = work_duration
+        self.create_at = datetime.today()
 
     def __repr__(self):
-        return "<WorkDay(dt='%s', work_duration='%s')>" % (
+        return "<WorkDay(iso_format='%s', work_duration='%s')>" % (
             self.iso_format,
             self.work_duration,
         )
@@ -30,14 +35,22 @@ class WorkSession(Base):
     __tablename__ = "work_session"
 
     id = Column(Integer, primary_key=True)
-    day_id = Column(Integer, ForeignKey("workday.id"))
+    start_at = Column(DateTime)
+    end_at = Column(DateTime)
     created_at = Column(DateTime)
-    started_at = Column(DateTime)
-    ended_at = Column(DateTime)
     event = relationship("Event")
 
+    def __init__(self, start_at, end_at=None):
+        self.start_at = start_at
+        self.end_at = end_at
+        self.created_at = datetime.today()
+
     def __repr__(self):
-        return "<WorkSession('')>"
+        return "<WorkSession('id='%s' started_at='%s', ended_at='%s')>" % (
+            self.id,
+            self.create_at,
+            self.ended_at,
+        )
 
 
 class Event(Base):
@@ -51,8 +64,16 @@ class Event(Base):
     end_at = Column(DateTime)
     note = Column(String)
 
+    # def __init__(self, ):
+    # pass
+
     def __repr__(self):
-        return "<Event(name='%s', type='%s)>" % (self.name, self.default_duration)
+        return "<Event(name='%s', type='%s', created_at='%s', ended_at='%s')>" % (
+            self.name,
+            self.type_id,
+            self.created_at,
+            self.end_at,
+        )
 
 
 class EventType(Base):
@@ -65,6 +86,15 @@ class EventType(Base):
     is_work_time = Column(Boolean)
     is_active = Column(Boolean)
     event = relationship("Event")
+
+    def __init__(
+        self, name, is_work_time, default_duration=conf.DEFAULT_EVENT_DURATION
+    ):
+        self.name = name
+        self.create_at = datetime.today()
+        self.default_duration = default_duration
+        self.is_work_time = is_work_time
+        self.is_active = True
 
     def __repr__(self):
         return "<EventType(name='%s'>" % (self.name)

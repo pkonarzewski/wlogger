@@ -50,8 +50,9 @@ hdlr.setFormatter(LOG_FORMAT)
 LOGGER.addHandler(hdlr)
 LOGGER.setLevel(LOG_LEVEL)
 
-DEFAULT_DAY_DURATION_MIN = 480
-DEFAULT_EVENT_DURATION_MIN = 10
+# All time spans in minutes
+DEFAULT_DAY_DURATION = 8 * 60
+DEFAULT_EVENT_DURATION = 10
 
 # Config overried by local file
 config_path = os.path.join(DATA_PATH, "config.py")
