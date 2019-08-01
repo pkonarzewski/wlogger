@@ -1,36 +1,95 @@
 """x."""
 
-from datetime import datetime
+from datetime import datetime, date, timedelta
+
+from sqlalchemy import func
 
 import wtlogger.config as conf
 from wtlogger.db import create_session
-from wtlogger.models import WorkDay, WorkSession, Event, EventType
+from wtlogger.models import WorkSession
+from wtlogger.exceptions import WtlException
 
 
 class Worklog:
-    pass
-
-    def start_day(self, dttm):
+    def start_session(self, dttm: datetime):
         with create_session() as session:
-            session.add(WorkDay(dttm=dttm))
+            last_session = self.get_last_session(session)
 
-    def start_session(self, dttm):
-        with create_session() as session:
-            session.add(WorkSession(start_at=dttm))
-
-    def end_session(self, ddtm):
-        with create_session() as session:
-            session.query()
-
-    def add_event(self, dttm, event_id):
-        pass
-
-    def add_event_type(self, name, default_duration, is_work_time):
-        with create_session() as session:
-            session.add(
-                EventType(
-                    name=name,
-                    default_duration=default_duration,
-                    is_work_time=is_work_time,
+            if last_session.end_at is None:
+                raise WtlException(
+                    f"There is still open work session id={last_session.id}"
                 )
+            else:
+                session.add(WorkSession(start_at=self.format_dttm(dttm)))
+
+    def end_session(self, ddtm: datetime):
+        with create_session() as session:
+            last_session = self.get_last_session(session)
+
+            if last_session.end_at is not None:
+                raise WtlException("No open work session to close.")
+            else:
+                last_session.end_at = self.format_dttm(ddtm)
+
+            # TODO: if close date is next day, close on last day, open new session
+
+    def format_dttm(self, dttm: datetime) -> datetime:
+        return dttm.replace(microsecond=0)
+
+    def get_last_session(self, session):
+        last_session = (
+            session.query(WorkSession).order_by(WorkSession.created_at.desc()).first()
+        )
+        return last_session
+
+    def show_last_sessions(self, n=5):
+
+        with create_session() as session:
+            ses = (
+                session.query(WorkSession)
+                .order_by(WorkSession.created_at.desc())
+                .limit(n)
             )
+            for s in ses:
+                print("|", s.id, "|", s.start_at, "|", s.end_at, "|")
+
+            return ses
+
+    def workday_status(self, dt=date.today()):
+
+        with create_session() as session:
+            today_session = session.query(WorkSession).filter(
+                func.DATE(WorkSession.start_at) == dt.strftime("%Y-%m-%d")
+            )
+
+            print(today_session)
+
+            w_duration = timedelta(seconds=0)
+            for s in today_session:
+                print("a")
+                w_duration += s.duration()
+
+            first_start = (
+                today_session.order_by(WorkSession.created_at).first().start_at
+            )
+            work_duration = timedelta(minutes=8 * 60)
+            planed_end = first_start + work_duration
+            today_session_duration = work_duration - w_duration
+            remaining = work_duration - w_duration
+
+            # print(first_start, planed_end, w_duration, today_session_duration)
+
+            if w_duration <= work_duration:
+                wee_text = "Pozostalo"
+            else:
+                wee_text = "Nadgodziny"
+
+        status_template = (
+            "W pracy od:\t",
+            first_start.strftime("%H:%m:%d"),
+            "\nKoniec o:\t",
+            planed_end.strftime("%H:%m:%d"),
+            "\n{}:\t {}".format(wee_text, remaining),
+        )
+
+        print("".join(status_template))

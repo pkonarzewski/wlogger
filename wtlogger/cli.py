@@ -13,17 +13,7 @@ from wtlogger.db import initdb
 parser = argparse.ArgumentParser(description="Worklog script")
 parser.add_argument(
     "action",
-    choices=[
-        "start",
-        "stop",
-        "pause",
-        "event",
-        "status",
-        "log",
-        "test",
-        "version",
-        "initdb",
-    ],
+    choices=["start", "stop", "status", "log", "test", "version", "initdb"],
     type=str,
 )
 parser.add_argument(
@@ -37,7 +27,6 @@ parser.add_argument(
 parser.add_argument(
     "--bye", action="store_true", help='shutdown system after "stop" action'
 )
-parser.add_argument("-e", "--event_type", required=False, type=str, help="event type")
 parser.add_argument(
     "-dr", "--duration", required=False, type=int, help="event duration (in minutes)"
 )
@@ -60,15 +49,6 @@ def main():
 
         if args.action == "stop" and args.bye is True:
             system_shutdown()
-
-    elif args.action == "event":
-        conf.LOGGER.info(args.action)
-        with worklog.open(mode="a", encoding="utf8") as f:
-            f.write(
-                "{};{}\n".format(
-                    script_date.strftime(conf.DATE_FORMAT), args.event_type
-                )
-            )
 
     elif args.action == "status":
 
@@ -102,11 +82,18 @@ def main():
             for n in lines[-5:]:
                 print(n, end="")
 
-    elif args.action == "report":
-        print("WIP")
-
     elif args.action == "test":
         print("test")
+        import time
+
+        wl = Worklog()
+        # wl.show_last_sessions()
+        # wl.start_session(datetime.today())
+        # wl.show_last_sessions(1)
+        # time.sleep(1)
+        # wl.end_session(datetime.today())
+        # wl.show_last_sessions(1)
+        wl.workday_status()
 
     elif args.action == "version":
         print('version: "{}"'.format(conf.VERSION_STR))

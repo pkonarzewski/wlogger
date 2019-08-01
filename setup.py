@@ -7,12 +7,13 @@ here = path.abspath(path.dirname(__file__))
 
 # Version
 with open(path.join(here, "wtlogger/_version.py")) as version_file:
-    version_line = version_file.read().strip()
-
-pkg_version = re.search(r"^__version__ = \"(.+)\"", version_line, re.M).group(
-    1
-)  # type: ignore
-
+    version_match = re.search(
+        r"^__version__ = \"(.+)\"", version_file.read().strip(), re.M
+    )
+if version_match:
+    pkg_version = version_match.group(1)
+else:
+    raise ValueError("Package version not found in file.")
 
 setup(
     name="wtlogger",
