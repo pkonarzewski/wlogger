@@ -1,0 +1,2 @@
+class WtlException(Exception):
+    pass
