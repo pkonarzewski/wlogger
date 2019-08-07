@@ -47,10 +47,9 @@ setup(
         "pendulum>=2.0,<2.1",
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
-    # $ pip install -e .[dev]
     extras_require={
-        "dev": ["pylint", "mypy", "tox", "black"],
-        "installer": ["pyinstaller"],
+        "dev": ["pylint", "mypy", "tox", "black", "pyinstaller"],
+        "distwin": ["pywin32",]
     },
     python_requires="~=3.6",
     cmdclass={"install": PostInstallCommand},
