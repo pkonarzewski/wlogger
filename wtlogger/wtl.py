@@ -13,7 +13,7 @@ from wtlogger.exceptions import WtlException
 class Worklog:
     def start_session(self, dttm: datetime):
         with create_session() as session:
-            last_session = self.get_last_session(session)
+            last_session = self._get_last_session(session)
 
             if last_session.end_at is None:
                 raise WtlException(
@@ -24,7 +24,7 @@ class Worklog:
 
     def stop_session(self, ddtm: datetime):
         with create_session() as session:
-            last_session = self.get_last_session(session)
+            last_session = self._get_last_session(session)
 
             if last_session.end_at is not None:
                 raise WtlException("No open work session to close.")
@@ -36,7 +36,7 @@ class Worklog:
     def format_dttm(self, dttm: datetime) -> datetime:
         return dttm.replace(microsecond=0)
 
-    def get_last_session(self, session):
+    def _get_last_session(self, session):
         last_session = (
             session.query(WorkSession).order_by(WorkSession.created_at.desc()).first()
         )
