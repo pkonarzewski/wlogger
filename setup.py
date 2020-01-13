@@ -47,8 +47,7 @@ setup(
         "pendulum>=2.0,<2.1",
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
-    extras_require={
-        "dev": ["pylint", "mypy", "tox", "black"],
+    extras_require={"dev": ["pylint", "mypy", "tox", "black", "pytest"],},
     python_requires="~=3.7",
     cmdclass={"install": PostInstallCommand},
 )

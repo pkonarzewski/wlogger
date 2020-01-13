@@ -1,11 +1,5 @@
-import unittest
-
-from wtlogger import Worklog
+import pytest
 
 
-class TestWorkLog(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def test_init(self):
-        wtl = Worklog()
+def test():
+    raise
