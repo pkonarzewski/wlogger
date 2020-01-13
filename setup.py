@@ -34,14 +34,14 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     keywords="time logger work",
     packages=find_packages(exclude=["tests"]),
     install_requires=[
-        "alembic>=1.0,<1.1",
-        "pandas>=0.24,<0.25",
+        "alembic>=1.3,<1.4",
+        "pandas>=0.25,<0.26",
         "sqlalchemy>=1.3,<1.4",
         "Click==7.0",
         "pendulum>=2.0,<2.1",
@@ -49,8 +49,8 @@ setup(
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
     extras_require={
         "dev": ["pylint", "mypy", "tox", "black", "pyinstaller"],
-        "distwin": ["pywin32",]
+        "distwin": ["pywin32",],
     },
-    python_requires="~=3.6",
+    python_requires="~=3.7",
     cmdclass={"install": PostInstallCommand},
 )
