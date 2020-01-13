@@ -12,14 +12,3 @@ TODO:
 ### Local env
 
 `$ pip install -e .[dev]`
-
-## Creating distribution
-
-### Windows
-
-`pip install -e .[distwin]`
-`build_script.bat`
-
-### Linux
-
-TODO

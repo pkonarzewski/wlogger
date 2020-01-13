@@ -48,9 +48,7 @@ setup(
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
     extras_require={
-        "dev": ["pylint", "mypy", "tox", "black", "pyinstaller"],
-        "distwin": ["pywin32",],
-    },
+        "dev": ["pylint", "mypy", "tox", "black"],
     python_requires="~=3.7",
     cmdclass={"install": PostInstallCommand},
 )
