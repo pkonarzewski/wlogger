@@ -1,39 +1,36 @@
-"""Sqlalchemy models."""
-
+from typing import Optional
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
-from wtlogger.db import Base
 import wtlogger.config as conf
+from wtlogger.db import Base
 
 
-class WorkSession(Base):
-    __tablename__ = "work_session"
+class WorkInterval(Base):
+    __tablename__ = "work_interval"
 
     id = Column(Integer, primary_key=True)
-    start_at = Column(DateTime)
-    end_at = Column(DateTime)
-    created_at = Column(DateTime)
+    started_at = Column(DateTime)
+    ended_at = Column(DateTime)
+    project_id = Column(Integer)
 
-    def __init__(self, start_at: datetime, end_at: datetime = None):
-        self.start_at = start_at
-        self.end_at = end_at
-        self.created_at = datetime.now()
+    def __init__(self, started_at: datetime, ended_at: Optional[datetime] = None):
+        self.started_at = started_at
+        self.ended_at = ended_at
 
-    def __repr__(self):
-        return "<WorkSession('id='%s' start_at='%s', end_at='%s')>" % (
-            self.id,
-            self.start_at,
-            self.end_at,
-        )
+    def now(self) -> datetime:
+        return datetime.today().replace(microsecond=0)
 
     @property
-    def duration(self):
-        if self.end_at is None:
-            end_at = datetime.today().replace(microsecond=0)
-        else:
-            end_at = self.end_at
+    def duration(self) -> int:
+        ended_at = self.now() if self.ended_at is None else self.ended_at
+        return (ended_at - self.started_at).seconds
 
-        return end_at - self.start_at
+    @property
+    def is_active(self) -> bool:
+        return self.ended_at is None
+
+    def __repr__(self) -> str:
+        return f"<WorkInterval('id='{self.id}' started_at='{self.started_at}', ended_at='{self.ended_at}')>"

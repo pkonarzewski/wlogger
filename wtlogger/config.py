@@ -1,7 +1,7 @@
 """The main config file.
 
-All configuration in this file can be overridden by providing a config
-file in ~/.wtl.
+All configuration in this file can be overritten by providing a config
+file in ~/.wtl directory or with envirenmental variables.
 """
 
 import os
@@ -55,7 +55,7 @@ LOGGER.addHandler(hdlr)
 LOGGER.setLevel(LOG_LEVEL)
 
 # All time spans in minutes
-DEFAULT_DAY_DURATION = 8 * 60
+DEFAULT_WORKDAY_DURATION = 8 * 60
 DEFAULT_EVENT_DURATION = 10
 
 
@@ -68,3 +68,11 @@ if os.path.exists(config_path):
     for key in dir(override_conf):
         if key.isupper():
             setattr(module, key, getattr(override_conf, key))
+
+
+# config overried by enviroment variable
+wtl_config_environ = list(filter(lambda x: x.startswith("WTL__"), os.environ.keys()))
+if len(wtl_config_environ) > 0:
+    module = sys.modules[__name__]
+    for key in filter(lambda x: x.startswith("WTL__"), os.environ.keys()):
+        setattr(module, key[4:], os.environ[key])

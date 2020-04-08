@@ -4,10 +4,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime, timedelta
 
-from wtlogger.wtl import Worklog
+from wtlogger.app import WorkLogger
 import wtlogger.config as conf
 from wtlogger.utils import normalize_time, system_shutdown
-from wtlogger.db import initdb
+from wtlogger.db import initdb, upgradedb
 
 
 parser = argparse.ArgumentParser(description="Worklog script")
@@ -37,14 +37,14 @@ def main():
 
     args = parser.parse_args()
     script_date = normalize_time(args.date)
-    worklog = Worklog()
+    worklog = WorkLogger()
 
     conf.LOGGER.info(args.action)
     if args.action == "start":
-        worklog.start_session(script_date)
+        worklog.start_work(script_date)
 
     elif args.action == "stop":
-        worklog.stop_session(script_date)
+        worklog.stop_work(script_date)
 
         if args.bye:
             system_shutdown()
@@ -53,13 +53,22 @@ def main():
         worklog.workday_status(script_date)
 
     elif args.action == "log":
-        worklog.show_last_sessions()
+        worklog.show_last_intervals()
 
     elif args.action == "test":
         print("TEST")
 
     elif args.action == "version":
-        print('version: "{}"'.format(conf.VERSION_STR))
+        print(f"version: {conf.VERSION_STR}")
 
     elif args.action == "initdb":
         initdb()
+
+    elif args.action == "upgradedb":
+        upgradedb()
+
+    elif args.action == "import":
+        pass
+
+    elif args.action == "export":
+        pass
