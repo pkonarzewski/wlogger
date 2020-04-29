@@ -90,6 +90,7 @@ class WorkLogger:
             wee_text = "Pozostalo"
         else:
             wee_text = "Nadgodziny"
+            remaining = w_duration - workday_duration
 
         return {
             "first_start": first_start,
