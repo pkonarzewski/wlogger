@@ -38,10 +38,6 @@ DATABASE_URI = "sqlite:///" + os.path.join(DATA_PATH, "data.db")
 # Set verbosity of sqlalchemy
 SQLALCHEMY_ECHO = False
 
-# Worklog #TODO: migrate to db and remove
-WORKLOG_FILE = os.path.join(DATA_PATH, "worklog.csv")
-ROW = namedtuple("row", ["date", "action"])
-
 # Logger
 LOG_FILE = os.path.join(DATA_PATH, "logs.log")
 LOG_FORMAT = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
