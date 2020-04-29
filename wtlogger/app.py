@@ -83,8 +83,8 @@ class WorkLogger:
             today_intervals.order_by(WorkInterval.started_at).first().started_at
         )
         workday_duration = timedelta(minutes=conf.DEFAULT_WORKDAY_DURATION)
-        planed_end = first_start + workday_duration
         remaining = workday_duration - w_duration
+        planed_end = datetime.now() + max([timedelta(seconds=0), remaining])
 
         if w_duration <= workday_duration:
             wee_text = "Pozostalo"
