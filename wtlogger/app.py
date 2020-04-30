@@ -49,7 +49,9 @@ class WorkLogger:
             .all()
         )
         for s in ses:
-            print("|", s.id, "|", s.started_at, "|", s.ended_at, "|")
+            row = [s.id, s.started_at, s.ended_at, timedelta(seconds=s.duration)]
+            row = [str(x) for x in row]
+            print(" | ".join(row))
 
         return ses
 
