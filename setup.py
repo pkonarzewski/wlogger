@@ -40,11 +40,12 @@ setup(
     keywords="time logger work",
     packages=find_packages(exclude=["tests"]),
     install_requires=[
-        "alembic>=1.3,<1.4",
-        "pandas>=0.25,<0.26",
-        "sqlalchemy>=1.3,<1.4",
-        "Click==7.0",
-        "pendulum>=2.0,<2.1",
+        "alembic>=1.3",
+        "pandas>=1.0",
+        "sqlalchemy>=1.3",
+        "Click>=7.0",
+        "pendulum>=2.0",
+        "python-dateutil>=2.8",
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
     extras_require={
