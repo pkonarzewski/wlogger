@@ -4,9 +4,11 @@ import argparse
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from dateutil.parser import parse
+
 from wtlogger.app import WorkLogger
 import wtlogger.config as conf
-from wtlogger.utils import normalize_time, system_shutdown
+from wtlogger.utils import system_shutdown
 from wtlogger.db import initdb, upgradedb
 
 
@@ -21,7 +23,7 @@ parser.add_argument(
     "--date",
     required=False,
     type=str,
-    default=datetime.now(),
+    default="now",
     help="set time of action, default is now",
 )
 parser.add_argument(
@@ -36,24 +38,23 @@ def main():
     """Main."""
 
     args = parser.parse_args()
-    script_date = normalize_time(args.date)
     worklog = WorkLogger()
 
     conf.LOGGER.info(args.action)
     if args.action == "start":
-        worklog.start_work(script_date)
+        worklog.start_work(args.date)
 
     elif args.action == "stop":
-        worklog.stop_work(script_date)
+        worklog.stop_work(args.date)
 
         if args.bye:
             system_shutdown()
 
     elif args.action == "status":
-        worklog.workday_status(script_date)
+        worklog.workday_status(args.date)
 
     elif args.action == "log":
-        worklog.show_last_intervals()
+        worklog.show_last_intervals(args.date)
 
     elif args.action == "test":
         print("TEST")

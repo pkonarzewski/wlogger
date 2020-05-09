@@ -27,7 +27,8 @@ else:
 
 VERSION_STR = __version__
 
-TIMEZONE = pendulum.timezone("UTC")
+# Local timezone
+TIMEZONE = "UTC"
 
 # Date format for all logs
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"

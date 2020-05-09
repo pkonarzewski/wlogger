@@ -45,12 +45,9 @@ setup(
         "sqlalchemy>=1.3",
         "Click>=7.0",
         "pendulum>=2.0",
-        "python-dateutil>=2.8",
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
-    extras_require={
-        "dev": ["pylint", "mypy", "sqlalchemy-stubs", "tox", "black", "pytest", "rope"],
-    },
+    extras_require={"dev": ["flake8", "mypy", "tox", "black", "pytest", "rope"]},
     python_requires="~=3.7",
     cmdclass={"install": PostInstallCommand},
 )
