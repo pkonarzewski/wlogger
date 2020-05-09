@@ -47,7 +47,9 @@ setup(
         "pendulum>=2.0",
     ],
     entry_points={"console_scripts": ["wtl=wtlogger.cli:main"]},
-    extras_require={"dev": ["flake8", "mypy", "tox", "black", "pytest", "rope"]},
+    extras_require={
+        "dev": ["flake8", "mypy", "tox", "black", "pytest", "pytest-cov", "rope"]
+    },
     python_requires="~=3.7",
     cmdclass={"install": PostInstallCommand},
 )

@@ -1,10 +1,6 @@
 """Command line interface."""
 
 import argparse
-from pathlib import Path
-from datetime import datetime, timedelta
-
-from dateutil.parser import parse
 
 from wtlogger.app import WorkLogger
 import wtlogger.config as conf

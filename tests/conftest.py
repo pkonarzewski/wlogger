@@ -1,16 +1,15 @@
 import pytest
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from wtlogger.models import Base
 
 
-# @pytest.fixture(autouse=True)
-# def env_setup(monkeypatch, tmpdir):
-#     directory = str(tmpdir)
-#     monkeypatch.setenv("WTL_HOME", directory)
-#     monkeypatch.setenv("WTL__DATABASE_URI", "sqlite:///")
+@pytest.fixture(autouse=True)
+def env_setup(monkeypatch, tmpdir):
+    directory = str(tmpdir)
+    monkeypatch.setenv("WTL_HOME", directory)
+    monkeypatch.setenv("WTL__DATABASE_URI", "sqlite:///")
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +26,7 @@ def tables(engine):
 
 @pytest.yield_fixture
 def session(engine, tables):
-    """Returns an sqlalchemy session, and after the test tears down everything properly."""
+    """Returns an sqlalchemy session, and after the test tears down everything."""
     connection = engine.connect()
     transaction = connection.begin()
     session = Session(bind=connection)

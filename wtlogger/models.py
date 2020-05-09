@@ -1,10 +1,8 @@
 from typing import Optional
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, DateTime
 
-import wtlogger.config as conf
 from wtlogger.db import Base
 
 
